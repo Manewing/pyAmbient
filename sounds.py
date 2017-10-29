@@ -18,7 +18,6 @@ class Sound(object):
 
         # internal state
         self.loaded     = False
-        self.playing    = False
 
         # attributes
         self.volume     = 1.0
@@ -61,17 +60,15 @@ class Sound(object):
         self.lock.acquire()
         #LOGGER.logDebug("acquired lock", self)
 
-        if self.cstart and not self.playing:
+        if self.cstart:
             LOGGER.logDebug("start", self)
             self.sobj.play(-1)
             self.cstart = False
-            self.playing = True
 
-        if self.cstop and self.playing:
+        if self.cstop:
             LOGGER.logDebug("stop", self)
             self.sobj.stop()
             self.cstop = False
-            self.playing = False
 
         if self.cvolume:
             LOGGER.logDebug("set volume to {} %".format(self.volume*100), self)
