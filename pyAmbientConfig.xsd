@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:xse="http://www.codesynthesis.com/xmlns/xml-schema-extension">
+
+  <xs:simpleType name="VolumeType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Volume value ranging from 0 % (0.0) to 100 % (1.0).
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.0"/>
+      <xs:maxInclusive value="1.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="VotatilityType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        The volatility defines how fast a different sounds of an ambient
+        are drifting and thus how fast the ambient is "changing".
+        It directly determines the update rate of the ambient, ranging from
+        0.6 updates per minute (0.01) to 600 updates per minute (10.0).
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:restriction base="xs:float">
+      <xs:minInclusive value="0.01"/>
+      <xs:maxInclusive value="10.0"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="NameType">
+
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Type of a name in the configuration e.g. for an ambient.
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z0-9_/ ]+"/>
+    </xs:restriction>
+
+  </xs:simpleType>
+
+  <xs:complexType name="SoundType">
+
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:attribute name="file" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Path to the sound file to be used.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="base" type="VolumeType" use="required">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Base volume of the sound file.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="drift" type="VolumeType" use="required">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          The maximal deviation from the base volume allowed, the sum
+          of the base volume and the drift must not exceed the maximum volume
+          and the difference must not be negative.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+  </xs:complexType>
+
+  <xs:complexType name="AmbientType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+      <xs:element name="Sound" type="SoundType" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+
+    <xs:attribute name="name" type="NameType" use="required">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Descriptive name of the ambient that is configured.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="volatility" type="VotatilityType" use="required">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          The volatility of the ambient, it is how fast the different sounds
+          are drifting and thus how fast the ambient is "changing". A low
+          votatility results in a low update rate, whereas a high votatility
+          results in a high update rate.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+  </xs:complexType>
+
+  <xs:complexType name="AmbientConfigType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        Holds information about a (sub) pyAmbient configuration file.
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:attribute name="file" type="xs:string" use="required">
+      <xs:annotation>
+        <xs:documentation xml:lang="en">
+          Path to the configuration file.
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+
+  </xs:complexType>
+
+  <!-- root type -->
+
+  <xs:complexType name="pyAmbientType">
+    <xs:annotation>
+      <xs:documentation xml:lang="en">
+        This is the root type of a pyAmbient configuration file:
+        It can consist of:
+          (a) an ambient configuration
+          (b) a sequence of (sub) ambient configuration files
+      </xs:documentation>
+    </xs:annotation>
+
+    <xs:sequence>
+      <xs:element name="Ambient" type="AmbientType" minOccurs="0"/>
+      <xs:element name="AmbientConfig" type="AmbientConfigType" minOccurs="0"/>
+    </xs:sequence>
+
+  </xs:complexType>
+
+  <xs:element name="pyAmbient" type="pyAmbientType"/>
+
+</xs:schema>
