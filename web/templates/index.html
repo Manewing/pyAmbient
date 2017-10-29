@@ -1,0 +1,90 @@
+<!doctype html>
+{% extends "layout.html" %}
+{% block body %}
+
+<h1>PyAmbient</h1>
+<h2>Select the ambient you want</h2>
+<div class=imgbox>
+  <!-- TODO disable images if ambient is not provided -->
+  <!-- also add dyamic filenames -->
+  <div class=img_left>
+    <img class=image id=0 onclick="update_image(this)" title="{{ title0 }}" src="{{ url_for('static', filename='thunder.png') }}" style="opacity: 0.5" />
+  </div>
+  <div class=img_right>
+    <img class=image id=1 onclick="update_image(this)" title="{{ title1 }}" src="{{ url_for('static', filename='rain.png') }}" style="opacity: 0.5" />
+  </div>
+</div>
+<div class=imgbox>
+  <div class=img_left>
+    <img class=image id=2 onclick="update_image(this)" title="{{ title2 }}" src="{{ url_for('static', filename='forest.png') }}" style="opacity: 0.5" />
+  </div>
+  <div class=img_right>
+    <img class=image id=3 onclick="update_image(this)" title="{{ title3 }}" src="{{ url_for('static', filename='night.png') }}" style="opacity: 0.5" />
+  </div>
+</div>
+<div class=imgbox>
+  <div class=img_left>
+    <img class=image id=4 onclick="update_image(this)" title="{{ title4 }}" src="{{ url_for('static', filename='sea.png') }}" style="opacity: 0.5" />
+  </div>
+  <div class=img_right>
+    <img class=image id=5 onclick="update_image(this)" title="{{ title5 }}" src="{{ url_for('static', filename='leaves.png') }}" style="opacity: 0.5" />
+  </div>
+</div>
+
+<script type="text/javascript">
+  var id_playing = {{ id_playing }};
+
+  function post(path, params, method) {
+    method = method || "post";
+
+    var form = document.createElement("form");
+    form.setAttribute("method", method);
+    form.setAttribute("action", path);
+
+    for (var key in params) {
+      if (params.hasOwnProperty(key)) {
+        var hiddenField = document.createElement("input");
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", key);
+        hiddenField.setAttribute("value", params[key]);
+
+        form.appendChild(hiddenField);
+       }
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  function disable_all() {
+    elements = document.getElementsByTagName("img");
+    for(var l = 0; l < elements.length; l++) {
+      elements[l].style.opacity = 0.5;
+    }
+  }
+
+  function update_image(element) {
+    var set_op = (element.style.opacity == 0.5) ? 1.0 : 0.5;
+    disable_all();
+    element.style.opacity = set_op;
+
+    if (id_playing == -1) {
+      post("/play", {id: element.id});
+    } else {
+      post("/stop", "");
+    }
+  }
+
+  window.onload = function() {
+    elements = document.getElementsByTagName("img");
+    for (var l = 0; l < elements.length; l++) {
+      if (elements[l].id == id_playing) {
+        elements[l].style.opacity = 1.0;
+        break;
+      }
+    }
+  }
+
+</script>
+
+{% endblock %}

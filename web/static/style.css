@@ -1,0 +1,24 @@
+body            { font-family: sans-serif; background: #8adc9d; }
+a, h1, h2       { color: white; }
+h1, h2          { font-family: 'Purisa', serif; margin: 0; text-align: center }
+h1              { font-size: 3.0em; }
+h2              { font-size: 1.2em; }
+
+.page           { margin: 2em auto; width: 35em; padding: 0.8em; }
+.imgbox         { margin: 2em auto; width: 0 auto; height: 160px;}
+.img_left       { float: left; cursor: pointer }
+.img_right      { float: right;  cursor: pointer }
+.image          { width: 100px; height: 100px; }
+
+.thumb          { width: 400px; height: 160px; image-rendering: -moz-crisp-edges }
+.entries        { list-style: none; margin: 0; padding: 0; }
+.entries li     { margin: 0.8em 1.2em; }
+.entries li h2  { margin-left: -1em; }
+.add-entry      { font-size: 0.9em; border-bottom: 1px solid #ccc; }
+.add-entry dl   { font-weight: bold; }
+.metanav        { text-align: right; font-size: 0.8em; padding: 0.3em;
+                  margin-bottom: 1em; background: #fafafa; }
+.flash          { background: #CEE5F5; padding: 0.5em;
+                  border: 1px solid #AACBE2; }
+.hidden_input   { display: block; visibility: hidden; width: 0; height: 0 }
+.error          { background: #F0D6D6; padding: 0.5em; }
