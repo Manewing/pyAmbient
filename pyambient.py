@@ -153,6 +153,8 @@ class Ambient(object):
         if not self.loaded:
             self.__load()
 
+        LOGGER.logInfo("'{}' start".format(self.name))
+
         for sound in self.sounds:
             sound.play()
 
@@ -164,6 +166,8 @@ class Ambient(object):
     def stop(self):
         if not self.loaded:
             return
+
+        LOGGER.logInfo("'{}' stop".format(self.name))
 
         for sound in self.sounds:
             sound.stop()
@@ -197,27 +201,29 @@ class AmbientControl(object):
         # setup ambient dictionary
         self.ambients = dict()
         for elem in root.findall("AmbientConfig"):
-            self.ambients[elem.get("id")] = elem.get("file")
+            self.ambients[elem.get("id")] = Ambient(elem.get("file"))
 
         # set current ambient to none
         self.ambient = None
 
-    # @brief getName - get the name of the ambient with given ID
-    # @param[in] ambient_id - ID of the ambient to get the name of
-    def getName(self, ambient_id):
+    # @brief getAmbients - get the configured ambients
+    def getAmbients(self):
         return self.ambients
+
+    # @brief get - get the current ambient, None if none selected
+    def get(self):
+        return self.ambient
 
     # @brief switch - switches to ambient with given ID
     # @param[in] ambient_id - ID of the ambient to switch to
     def switch(self, ambient_id):
         if self.ambient != None:
             self.ambient.stop()
-        self.ambient = Ambient(self.ambients[ambient_id])
-        self.ambient.start()
+
+        # switch to new ambient
+        self.ambient = self.ambients[ambient_id]
 
         LOGGER.logInfo("Switched to ambient '{}'".format(self.ambient.getName()))
-
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="pyAmbient")
@@ -236,3 +242,4 @@ if __name__ == "__main__":
 
     ambc = AmbientControl(args.config)
     ambc.switch(args.ambient)
+    ambc.get().start()
