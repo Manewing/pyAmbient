@@ -7,6 +7,9 @@ from threading import Thread, Lock
 
 from utils import LOGGER
 
+# @class Sound
+# @brief Wrapper around pygame.mixer.sound class, which provides a
+#   non-blocking (of the loading process) interface to said wrapped class.
 class Sound(object):
     def __init__(self, filename):
         if not os.path.isfile(filename):
@@ -40,6 +43,7 @@ class Sound(object):
         # load the sound
         Thread(target=self.__load).start()
 
+    # @brief __load - loads the actual sound file and runs update
     def __load(self):
         self.sobj = mixer.Sound(self.filename)
         self.loaded = True
@@ -48,6 +52,8 @@ class Sound(object):
         # make sure we catch all commands during load
         self.__update()
 
+    # @brief __update - updates the current state of the sound file,
+    #   if the actual file is not loaded does nothing
     def __update(self):
         if not self.loaded:
             return
@@ -75,30 +81,46 @@ class Sound(object):
         #LOGGER.logDebug("releasing lock", self)
         self.lock.release()
 
+    # @brief setVolume - sets the volume of the sound
+    # @param[in] vol - the volume to set (range 0.0 to 1.0)
     def setVolume(self, vol):
         self.cvolume = True
         self.volume  = vol
         self.__update()
 
+    # @brief getVolume - get the volume of the sound
     def getVolume(self):
         return self.volume
 
+    # @brief getLength - get the length of the sound
     def getLength(self):
         return self.length
 
+    # @brief play - starts playback of the sound
     def play(self):
         self.cstart = True
         self.__update()
 
+    # @brief stop - stops the playback of the sound
     def stop(self):
         self.cstop = True
         self.__update()
 
+# @class SoundPool
+# @brief Handles Sound instances by file path
 class SoundPool(object):
+
+    # @brief constructor
     def __init__(self):
         self.pool = dict()
 
+    # @brief get - gets a sound by filename
+    # @param[in] filename - path to the sound file to get
     def get(self, filename):
         if not filename in self.pool:
             self.pool[filename] = Sound(filename)
         return self.pool[filename]
+
+    # @brief reset - resets the sound pool
+    def reset(self):
+        self.pool = dict()
