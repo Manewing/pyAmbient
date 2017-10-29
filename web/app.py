@@ -27,7 +27,7 @@ def play():
 @app.route('/stop', methods=['POST', 'GET'])
 def stop():
     global AMB_ID
-    if request.method == 'POST':
+    if request.method == 'POST' and AMB_ID != -1:
         AMBC.get().stop()
         AMB_ID = -1
     return redirect(url_for('.index'))
