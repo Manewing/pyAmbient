@@ -79,7 +79,7 @@ class Ambient(object):
     # @brief constructor
     # @param[in] configfile - the configuration file of the ambient
     # @param[in] spool      - the sound pool the ambient should use
-    def __init__(self, configfile, spool):
+    def __init__(self, configfile, spool = SoundPool()):
 
         # load configuration file
         with open(configfile, "r") as f:
@@ -189,9 +189,6 @@ class AmbientControl(object):
         mixer.pre_init(44100, -16, 2, 2048)
         mixer.init()
 
-        # initialize sound pool
-        self.spool = SoundPool()
-
         # load configuration file
         with open(configfile, "r") as f:
             data = f.read()
@@ -215,7 +212,7 @@ class AmbientControl(object):
     def switch(self, ambient_id):
         if self.ambient != None:
             self.ambient.stop()
-        self.ambient = Ambient(self.ambients[ambient_id], self.spool)
+        self.ambient = Ambient(self.ambients[ambient_id])
         self.ambient.start()
 
         LOGGER.logInfo("Switched to ambient '{}'".format(self.ambient.getName()))
